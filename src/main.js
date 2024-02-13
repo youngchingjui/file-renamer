@@ -24,11 +24,11 @@ app.whenReady().then(() => {
             createWindow()
         }
     })
+})
 
-    // Quit when all windows are closed, except on Mac
-    app.on("window-all-closed", () => {
-        if (process.platform !== "darwin") {
-            app.quit()
-        }
-    })
+// Quit when all windows are closed, except on Mac
+app.on("window-all-closed", () => {
+    if (process.platform !== "darwin") {
+        app.quit()
+    }
 })
