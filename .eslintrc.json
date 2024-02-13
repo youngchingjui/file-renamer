@@ -8,5 +8,8 @@
   "rules": {
     "simple-import-sort/imports": "error",
     "simple-import-sort/exports": "error"
+  },
+  "parserOptions": {
+    "ecmaVersion": 6
   }
 }
