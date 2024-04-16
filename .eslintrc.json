@@ -10,6 +10,7 @@
     "simple-import-sort/exports": "error"
   },
   "parserOptions": {
-    "ecmaVersion": 6
+    "ecmaVersion": "latest",
+    "sourceType": "module"
   }
 }

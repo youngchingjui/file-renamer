@@ -10,7 +10,6 @@ function createWindow() {
             nodeIntegration: true,
         },
     })
-
     win.loadFile("index.html")
     console.log("finished loading")
 }
