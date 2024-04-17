@@ -1,16 +1,23 @@
-const { app, BrowserWindow } = require("electron/main")
+import path from "node:path"
+import url from "node:url"
+
+import { app, BrowserWindow } from "electron/main"
 
 let win
+const __dirname = path.dirname(url.fileURLToPath(import.meta.url))
 
 function createWindow() {
     win = new BrowserWindow({
         width: 800,
         height: 600,
         webPreferences: {
-            nodeIntegration: true,
+            preload: path.join(__dirname, "preload.js"),
+            nodeIntegration: false,
+            contextIsolation: true,
+            nativeWindowOpen: true,
         },
     })
-    win.loadFile("index.html")
+    win.loadFile("src/index.html")
     console.log("finished loading")
 }
 
