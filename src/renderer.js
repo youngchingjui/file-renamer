@@ -44,5 +44,22 @@ async function saveAPIKey() {
     openai = new OpenAI({ apiKey, dangerouslyAllowBrowser: true })
 }
 
+async function displayFileInfo() {
+    const fileInput = document.getElementById("fileUpload")
+    const file = fileInput.files[0]
+    const fileInfoDiv = document.getElementById("fileInfo")
+
+    if (file) {
+        const { name, type } = file
+
+        fileInfoDiv.innerHTML = name
+    } else {
+        fileInfoDiv.innerHTML = "No file selected"
+    }
+}
+
 document.getElementById("my-button").addEventListener("click", main)
 document.getElementById("api-key-button").addEventListener("click", saveAPIKey)
+document
+    .getElementById("fileUpload")
+    .addEventListener("change", displayFileInfo)
