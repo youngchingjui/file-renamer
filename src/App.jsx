@@ -7,6 +7,7 @@ function App() {
   const [isLoading, setIsLoading] = useState(false)
 
   const openFile = async () => {
+    setResponseText("")
     const {filePath, base64Image} = await window.electron.openFile()
     if (!filePath) return
     setFileInfo({
@@ -22,6 +23,7 @@ function App() {
   };
 
   const handleRunScript = async () => {
+    setResponseText("")
     setIsLoading(true)
     if (!fileInfo.base64) {
       console.log("No image selected");
@@ -61,14 +63,16 @@ function App() {
       });
 
       const data = await response.json();
-      console.log(data);
-      setResponseText(data.choices[0].message.content); // Parse and set the response text
+      const newFileName = data.choices[0].message.content
+      setResponseText(`✅ File renamed to: ${newFileName}`);
 
+      // Prepare to send new file name back to main
       const directoryPath = fileInfo.filePath.substring(0, fileInfo.filePath.lastIndexOf("/") + 1)
-      const newPath = `${directoryPath}${data.choices[0].message.content}.${fileInfo.extension}`
+      const newPath = `${directoryPath}${newFileName}.${fileInfo.extension}`
       window.electron.renameFile({oldPath: fileInfo.filePath, newPath})
+
     } catch (error) {
-      console.error("Error:", error);
+      setResponseText(`❌ Error: ${error}`)
     } finally {
       setIsLoading(false)
     }
@@ -95,6 +99,9 @@ function App() {
         <div className="border-t-transparent border-solid animate-spin rounded-full border-white border-4 h-6 w-6"></div>
         ) : ("Rename my file")}
       </button>
+      {responseText && (
+        <div className="text-green-500 mt-2">{responseText}</div>
+      )}
       <hr className="my-6" />
       <div>
         <label
@@ -118,16 +125,6 @@ function App() {
       >
         Save API Key
       </button>
-    </div>
-    <div>
-      <h2>Response from OpenAI:</h2>
-      <p>{responseText}</p>
-    </div>
-    <div className="mt-8">
-      <h3 className="text-lg font-semibold">File Info</h3>
-      <p>Name: {fileInfo.name}</p>
-      <p>File Path: {fileInfo.filePath}</p>
-      <p>Extension: {fileInfo.extension}</p>
     </div>
   </div>
   );
