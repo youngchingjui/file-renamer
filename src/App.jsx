@@ -81,7 +81,9 @@ function App() {
       console.log(data);
       setResponseText(data.choices[0].message.content); // Parse and set the response text
 
-      window.electron.send('response-text', data.choices[0].message.content);
+      const directoryPath = fileInfo.filePath.substring(0, fileInfo.filePath.lastIndexOf("/") + 1)
+      const newPath = `${directoryPath}${data.choices[0].message.content}.${fileInfo.extension}`
+      window.electron.renameFile({oldPath: fileInfo.filePath, newPath})
     } catch (error) {
       console.error("Error:", error);
     }

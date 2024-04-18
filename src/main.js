@@ -46,7 +46,7 @@ ipcMain.on("response-text", (event, text) => {
 
 ipcMain.on("rename-file", (event, { oldPath, newPath }) => {
     console.log(oldPath, newPath)
-    fstat.rename(oldPath, newPath, (err) => {
+    fs.rename(oldPath, newPath, (err) => {
         if (err) {
             console.error("File rename error:", err)
             return
