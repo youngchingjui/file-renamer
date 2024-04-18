@@ -1,21 +1,9 @@
-import OpenAI from "openai";
-import React, { useEffect,useState } from "react";
+import React, { useState } from "react";
 
 function App() {
   const [apiKey, setApiKey] = useState(localStorage.getItem("apiKey") || "");
-  const [openai, setOpenai] = useState(null);
   const [fileInfo, setFileInfo] = useState({ name: "No file selected", base64: "" });
-
-  useEffect(() => {
-    if (apiKey) {
-      setOpenai(
-        new OpenAI({
-          apiKey: apiKey,
-          dangerouslyAllowBrowser: true,
-        })
-      );
-    }
-  }, [apiKey]);
+  const [responseText, setResponseText] = useState("")
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -37,7 +25,6 @@ function App() {
 
   const saveAPIKey = () => {
     localStorage.setItem("apiKey", apiKey);
-    setOpenai(new OpenAI({ apiKey, dangerouslyAllowBrowser: true }));
   };
 
   const handleRunScript = async () => {
@@ -46,25 +33,43 @@ function App() {
       return;
     }
     console.log("running main");
-    const response = await openai.chat.completions.create({
-      model: "gpt-4-turbo",
-      messages: [
-        {
-          role: "user",
-          content: [
-            { type: "text", text: "Suggest a file name for this image. Only give 1 suggested name. Don't provide any file extension." },
-            {
-              type: "image_url",
-              image_url: {
-                url: `data:image/jpeg;base64,${fileInfo.base64}`,
-              },
-            },
-          ],
-        },
-      ],
-    });
+    const headers = {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${apiKey}`
+    };
 
-    console.log(response.choices[0]);
+    const payload = {
+      "model": "gpt-4-turbo",
+      "messages": [
+        {
+          "role": "user",
+          "content": [
+            {
+              "type": "text",
+              "text": "Suggest a file name for this image. Only give 1 suggested name. Don't provide any file extension."
+            },
+            {
+              "type": "image_url",
+              "image_url": {"url": `data:image/jpeg;base64,${fileInfo.base64}`}
+            }
+          ]
+        }
+      ],
+    };
+
+    try {
+      const response = await fetch("https://api.openai.com/v1/chat/completions", {
+        method: "POST",
+        headers: headers,
+        body: JSON.stringify(payload)
+      });
+
+      const data = await response.json();
+      console.log(data);
+      setResponseText(data.choices[0].message.content); // Parse and set the response text
+    } catch (error) {
+      console.error("Error:", error);
+    }
   };
 
   return (
@@ -112,6 +117,10 @@ function App() {
       >
         Save API Key
       </button>
+    </div>
+    <div>
+      <h2>Response from OpenAI:</h2>
+      <p>{responseText}</p> {/* Display the response text */}
     </div>
   </div>
   );
