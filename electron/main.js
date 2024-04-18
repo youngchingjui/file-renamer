@@ -18,8 +18,7 @@ function createWindow() {
             nativeWindowOpen: true,
         },
     })
-    win.loadFile("dist/index.html")
-    console.log("finished loading")
+    win.loadFile("public/index.html")
 }
 
 app.whenReady().then(() => {

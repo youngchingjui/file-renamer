@@ -9,10 +9,10 @@ const __dirname = dirname(__filename)
 const config = {
     target: "electron-renderer",
     mode: "development",
-    entry: "./src/renderer.js", // entry file of your renderer code
+    entry: "./electron/renderer.js",
     output: {
         path: path.resolve(__dirname, "dist"),
-        filename: "renderer.bundle.js", // bundled file
+        filename: "renderer.bundle.js",
     },
     resolve: { extensions: [".js", ".jsx"], fullySpecified: false },
     module: {
@@ -29,11 +29,6 @@ const config = {
             },
         ],
     },
-    plugins: [
-        new CopyPlugin({
-            patterns: [{ from: "src/index.html", to: "index.html" }],
-        }),
-    ],
 }
 
 export default config
