@@ -13,13 +13,14 @@ const config = {
         path: path.resolve(__dirname, "dist"),
         filename: "renderer.bundle.js", // bundled file
     },
+    resolve: { extensions: [".js", ".jsx"], fullySpecified: false },
     module: {
         rules: [
             {
-                test: /\.js$/,
+                test: /\.(js|jsx)$/,
                 exclude: /node_modules/,
                 use: {
-                    loader: "babel-loader", // transpile ES6 to ES5
+                    loader: "babel-loader",
                     options: {
                         presets: ["@babel/preset-env"],
                     },
