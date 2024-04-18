@@ -13,6 +13,14 @@ const ApiKeyManager = ({ apiKey, setApiKey }) => {
         }
     }
 
+    const maskedAPIKey = (keyString) => {
+        return (
+            keyString.substring(0, 3) +
+            Array(20).fill("•").join("") +
+            keyString.substring(keyString.length - 3)
+        )
+    }
+
     return (
         <div>
             <label
@@ -25,7 +33,7 @@ const ApiKeyManager = ({ apiKey, setApiKey }) => {
                 <input
                     type="text"
                     id="api-key-input"
-                    value={apiKey}
+                    value={isEditing ? apiKey : maskedAPIKey(apiKey)}
                     onChange={(event) => setApiKey(event.target.value)}
                     className={`w-full px-4 py-2 2 border border-gray-300 rounded ${
                         !isEditing &&
