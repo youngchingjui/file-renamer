@@ -1,7 +1,7 @@
 import path from "node:path"
 import url from "node:url"
 
-import { app, BrowserWindow } from "electron/main"
+import { app, BrowserWindow, ipcMain } from "electron/main"
 
 let win
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url))
@@ -17,7 +17,7 @@ function createWindow() {
             nativeWindowOpen: true,
         },
     })
-    win.loadFile("src/index.html")
+    win.loadFile("dist/index.html")
     console.log("finished loading")
 }
 
@@ -37,4 +37,8 @@ app.on("window-all-closed", () => {
     if (process.platform !== "darwin") {
         app.quit()
     }
+})
+
+ipcMain.on("response-text", (event, text) => {
+    console.log(text)
 })

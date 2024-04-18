@@ -1,3 +1,4 @@
+import CopyPlugin from "copy-webpack-plugin"
 import path from "path"
 import { dirname } from "path"
 import { fileURLToPath } from "url"
@@ -28,6 +29,11 @@ const config = {
             },
         ],
     },
+    plugins: [
+        new CopyPlugin({
+            patterns: [{ from: "src/index.html", to: "index.html" }],
+        }),
+    ],
 }
 
 export default config

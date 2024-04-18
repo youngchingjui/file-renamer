@@ -67,6 +67,8 @@ function App() {
       const data = await response.json();
       console.log(data);
       setResponseText(data.choices[0].message.content); // Parse and set the response text
+
+      window.electron.send('response-text', data.choices[0].message.content);
     } catch (error) {
       console.error("Error:", error);
     }
