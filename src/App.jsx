@@ -4,6 +4,7 @@ function App() {
   const [apiKey, setApiKey] = useState(localStorage.getItem("apiKey") || "");
   const [fileInfo, setFileInfo] = useState({ name: "No file selected", base64: "" });
   const [responseText, setResponseText] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
 
   const openFile = async () => {
     const {filePath, base64Image} = await window.electron.openFile()
@@ -16,33 +17,15 @@ function App() {
     })
   }
 
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      const extension = file.name.split('.').pop()
-      reader.onloadend = () => {
-        // Convert image to base64
-        const base64Image = reader.result.split(',')[1]; // Remove the data URL part
-        setFileInfo({
-          name: file.name,
-          base64: base64Image,  
-          extension
-        });
-      };
-      reader.readAsDataURL(file);
-    } else {
-      setFileInfo({ name: "No file selected", base64: "", extension: "" });
-    }
-  };
-
   const saveAPIKey = () => {
     localStorage.setItem("apiKey", apiKey);
   };
 
   const handleRunScript = async () => {
+    setIsLoading(true)
     if (!fileInfo.base64) {
       console.log("No image selected");
+      setIsLoading(false)
       return;
     }
     console.log("running main");
@@ -86,31 +69,31 @@ function App() {
       window.electron.renameFile({oldPath: fileInfo.filePath, newPath})
     } catch (error) {
       console.error("Error:", error);
+    } finally {
+      setIsLoading(false)
     }
   };
 
   return (
     <div className="p-10 max-w-md mx-auto">
       <h1 className="text-lg font-semibold mb-5">File Renamer</h1>
-      <div className="mb-8 p-5 bg-gray-100 border-2 border-dashed border-gray-200 rounded flex items-center justify-center text-center">
-        <input
-          type="file"
-          id="fileUpload"
-          className="hidden"
-          onChange={handleFileChange}
-        />
-        <label className="cursor-pointer" htmlFor="fileUpload">
-          Upload file
-        </label>
-        <div id="fileInfo">{fileInfo.name}</div>
+      <div className="cursor-pointer mb-8 p-5 bg-gray-100 border-2 border-dashed border-gray-200 rounded flex items-center justify-center text-center" onClick={openFile}>
+        {fileInfo.name ? (
+          <div id="fileInfo">{fileInfo.name}</div>
+        ) : (
+          <label htmlFor="fileUpload">Upload file</label>
+        )}
       </div>
-      <button onClick={openFile}>Open File</button>
       <button
         id="my-button"
         className="px-4 py-2 mb-5 bg-indigo-500 text-white rounded hover:bg-indigo-400 transition-colors"
         onClick={handleRunScript}
+        disabled={isLoading}
       >
-        Rename my file
+        {isLoading ? 
+        (
+        <div className="border-t-transparent border-solid animate-spin rounded-full border-white border-4 h-6 w-6"></div>
+        ) : ("Rename my file")}
       </button>
       <hr className="my-6" />
       <div>
