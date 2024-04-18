@@ -4,7 +4,7 @@ import React, { useEffect,useState } from "react";
 function App() {
   const [apiKey, setApiKey] = useState(localStorage.getItem("apiKey") || "");
   const [openai, setOpenai] = useState(null);
-  const [fileInfo, setFileInfo] = useState("No file selected");
+  const [fileInfo, setFileInfo] = useState({ name: "No file selected", base64: "" });
 
   useEffect(() => {
     if (apiKey) {
@@ -20,10 +20,18 @@ function App() {
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (file) {
-      const { name } = file;
-      setFileInfo(name);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        // Convert image to base64
+        const base64Image = reader.result.split(',')[1]; // Remove the data URL part
+        setFileInfo({
+          name: file.name,
+          base64: base64Image,
+        });
+      };
+      reader.readAsDataURL(file);
     } else {
-      setFileInfo("No file selected");
+      setFileInfo({ name: "No file selected", base64: "" });
     }
   };
 
@@ -33,6 +41,10 @@ function App() {
   };
 
   const handleRunScript = async () => {
+    if (!fileInfo.base64) {
+      console.log("No image selected");
+      return;
+    }
     console.log("running main");
     const response = await openai.chat.completions.create({
       model: "gpt-4-turbo",
@@ -40,11 +52,11 @@ function App() {
         {
           role: "user",
           content: [
-            { type: "text", text: "What's in this image?" },
+            { type: "text", text: "Suggest a file name for this image. Only give 1 suggested name. Don't provide any file extension." },
             {
               type: "image_url",
               image_url: {
-                url: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/Gfp-wisconsin-madison-the-nature-boardwalk.jpg/2560px-Gfp-wisconsin-madison-the-nature-boardwalk.jpg",
+                url: `data:image/jpeg;base64,${fileInfo.base64}`,
               },
             },
           ],
@@ -68,7 +80,7 @@ function App() {
         <label className="cursor-pointer" htmlFor="fileUpload">
           Upload file
         </label>
-        <div id="fileInfo">{fileInfo}</div>
+        <div id="fileInfo">{fileInfo.name}</div>
       </div>
       <button
         id="my-button"
