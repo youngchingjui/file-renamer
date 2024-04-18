@@ -26,4 +26,8 @@ contextBridge.exposeInMainWorld("electron", {
             ipcRenderer.on(channel, (event, ...args) => func(...args))
         }
     },
+    renameFile: (oldPath, newPath) =>
+        ipcRenderer.send("rename-file", { oldPath, newPath }),
+
+    openFile: () => ipcRenderer.invoke("dialog:openFile"),
 })

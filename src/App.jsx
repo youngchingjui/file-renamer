@@ -5,21 +5,34 @@ function App() {
   const [fileInfo, setFileInfo] = useState({ name: "No file selected", base64: "" });
   const [responseText, setResponseText] = useState("")
 
+  const openFile = async () => {
+    const {filePath, base64Image} = await window.electron.openFile()
+    if (!filePath) return
+    setFileInfo({
+      name: filePath.split('/').pop(),
+      base64: base64Image,
+      filePath,
+      extension: filePath.split('.').pop()
+    })
+  }
+
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (file) {
       const reader = new FileReader();
+      const extension = file.name.split('.').pop()
       reader.onloadend = () => {
         // Convert image to base64
         const base64Image = reader.result.split(',')[1]; // Remove the data URL part
         setFileInfo({
           name: file.name,
-          base64: base64Image,
+          base64: base64Image,  
+          extension
         });
       };
       reader.readAsDataURL(file);
     } else {
-      setFileInfo({ name: "No file selected", base64: "" });
+      setFileInfo({ name: "No file selected", base64: "", extension: "" });
     }
   };
 
@@ -46,7 +59,7 @@ function App() {
           "content": [
             {
               "type": "text",
-              "text": "Suggest a file name for this image. Only give 1 suggested name. Don't provide any file extension."
+              "text": "Suggest a file name for this image. Only give 1 suggested name. Don't provide any file extension. Try to use this format: <YYYYMMDD> - <Description> - <Amount>, if any of those data point exist."
             },
             {
               "type": "image_url",
@@ -89,6 +102,7 @@ function App() {
         </label>
         <div id="fileInfo">{fileInfo.name}</div>
       </div>
+      <button onClick={openFile}>Open File</button>
       <button
         id="my-button"
         className="px-4 py-2 mb-5 bg-indigo-500 text-white rounded hover:bg-indigo-400 transition-colors"
@@ -122,7 +136,13 @@ function App() {
     </div>
     <div>
       <h2>Response from OpenAI:</h2>
-      <p>{responseText}</p> {/* Display the response text */}
+      <p>{responseText}</p>
+    </div>
+    <div className="mt-8">
+      <h3 className="text-lg font-semibold">File Info</h3>
+      <p>Name: {fileInfo.name}</p>
+      <p>File Path: {fileInfo.filePath}</p>
+      <p>Extension: {fileInfo.extension}</p>
     </div>
   </div>
   );

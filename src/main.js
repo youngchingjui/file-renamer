@@ -1,7 +1,8 @@
 import path from "node:path"
 import url from "node:url"
 
-import { app, BrowserWindow, ipcMain } from "electron/main"
+import { app, BrowserWindow, dialog, ipcMain } from "electron/main"
+import fs from "fs"
 
 let win
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url))
@@ -42,3 +43,28 @@ app.on("window-all-closed", () => {
 ipcMain.on("response-text", (event, text) => {
     console.log(text)
 })
+
+ipcMain.on("rename-file", (event, { oldPath, newPath }) => {
+    console.log(oldPath, newPath)
+    fstat.rename(oldPath, newPath, (err) => {
+        if (err) {
+            console.error("File rename error:", err)
+            return
+        }
+        console.log(`File renamed from ${oldPath} to ${newPath}`)
+    })
+})
+
+async function handleFileOpen() {
+    const { canceled, filePaths } = await dialog.showOpenDialog()
+    if (canceled || filePaths.length === 0) {
+        return { filePath: "", base64Image: "" }
+    }
+
+    const filePath = filePaths[0]
+    const fileContents = fs.readFileSync(filePath)
+    const base64Image = fileContents.toString("base64")
+    return { filePath, base64Image }
+}
+
+ipcMain.handle("dialog:openFile", handleFileOpen)
