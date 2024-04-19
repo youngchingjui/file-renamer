@@ -42,7 +42,7 @@ const FileRenamer = ({ apiKey }) => {
                     content: [
                         {
                             type: "text",
-                            text: "Suggest a file name for this image. Only give 1 suggested name. Don't provide any file extension. Try to use this format: <YYYYMMDD> - <Description> - <Amount>, if any of those data point exist.",
+                            text: "Suggest a file name for this image. Only give 1 suggested name. Don't provide any file extension. This image is likely the cover of a financial annual report. Use this format: '<STOCK TICKER SYMBOL> <YEAR> Annual Report'.",
                         },
                         {
                             type: "image_url",
