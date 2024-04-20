@@ -10,6 +10,7 @@
     "@electron-forge/maker-zip": "^7.4.0",
     "@electron-forge/plugin-auto-unpack-natives": "^7.4.0",
     "@electron-forge/plugin-fuses": "^7.4.0",
+    "@electron-forge/publisher-github": "^7.4.0",
     "@electron/fuses": "^1.8.0",
     "@electron/notarize": "^2.3.0",
     "babel-loader": "^9.1.3",
@@ -30,6 +31,7 @@
   "type": "module",
   "dependencies": {
     "@electron/osx-sign": "^1.1.0",
+    "dotenv": "^16.4.5",
     "electron-squirrel-startup": "^1.0.0",
     "openai": "^4.36.0",
     "react": "^18.2.0",

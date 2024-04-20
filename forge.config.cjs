@@ -1,5 +1,6 @@
 const { FusesPlugin } = require("@electron-forge/plugin-fuses")
 const { FuseV1Options, FuseVersion } = require("@electron/fuses")
+require("dotenv").config()
 
 module.exports = {
     packagerConfig: {
@@ -46,5 +47,18 @@ module.exports = {
             [FuseV1Options.EnableEmbeddedAsarIntegrityValidation]: true,
             [FuseV1Options.OnlyLoadAppFromAsar]: true,
         }),
+    ],
+    publishers: [
+        {
+            name: "@electron-forge/publisher-github",
+            config: {
+                repository: {
+                    owner: "youngchingjui",
+                    name: "file-renamer",
+                },
+                prerelease: false,
+                draft: true,
+            },
+        },
     ],
 }
