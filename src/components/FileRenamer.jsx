@@ -8,6 +8,7 @@ const FileRenamer = ({ apiKey }) => {
         name: "No file selected",
         base64: "",
     })
+    const [filenameFormat, setFilenameFormat] = useState("")
 
     const openFile = async () => {
         setResponseText("")
@@ -42,7 +43,13 @@ const FileRenamer = ({ apiKey }) => {
                     content: [
                         {
                             type: "text",
-                            text: "Suggest a file name for this image. Only give 1 suggested name. Don't provide any file extension. This image is likely the cover of a financial annual report. Use this format: '<STOCK TICKER SYMBOL> <YEAR> Annual Report'.",
+                            text: `Suggest a file name for this image. Only give 1 suggested name. Don't provide any file extension. Use spaces " ", not underscores "_".${
+                                filenameFormat
+                                    ? " Use this format: '" +
+                                      filenameFormat +
+                                      "'."
+                                    : "Suggest a most sensible file name format."
+                            }`,
                         },
                         {
                             type: "image_url",
@@ -95,6 +102,20 @@ const FileRenamer = ({ apiKey }) => {
                     <label htmlFor="fileUpload">Upload file</label>
                 )}
             </div>
+            <label
+                htmlFor="filenameFormat"
+                className="block text-sm font-medium text-gray-700"
+            >
+                Desired filename format
+            </label>
+            <input
+                id="filenameFormat"
+                type="text"
+                value={filenameFormat}
+                onChange={(e) => setFilenameFormat(e.target.value)}
+                placeholder="e.g. '<YYYYMMDD> - <Description>'"
+                className="mb-4 px-4 py-2 border rounded w-full"
+            />
             <button
                 id="my-button"
                 className="px-4 py-2 mb-5 bg-indigo-500 text-white rounded hover:bg-indigo-400 transition-colors"

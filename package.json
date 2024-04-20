@@ -26,7 +26,7 @@
   },
   "name": "file-renamer",
   "description": "Automatically rename files based on its contents",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "main": "electron/main.js",
   "type": "module",
   "dependencies": {
