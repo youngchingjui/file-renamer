@@ -106,7 +106,7 @@ const FileRenamer = ({ apiKey }) => {
                 htmlFor="filenameFormat"
                 className="block text-sm font-medium text-gray-700"
             >
-                Desired filename format
+                Desired filename format (optional)
             </label>
             <input
                 id="filenameFormat"
