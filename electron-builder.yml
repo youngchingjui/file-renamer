@@ -1,0 +1,13 @@
+appId: com.youngandai.file-renamer
+
+productName: File Renamer
+
+directories:
+    output: out
+
+win:
+    target:
+        - target: nsis
+          arch:
+              - x64
+    signAndEditExecutable: false
