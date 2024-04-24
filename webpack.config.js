@@ -14,6 +14,7 @@ const config = {
         filename: "renderer.bundle.js",
     },
     resolve: { extensions: [".js", ".jsx"], fullySpecified: false },
+    devtool: "inline-source-map",
     module: {
         rules: [
             {
@@ -22,7 +23,7 @@ const config = {
                 use: {
                     loader: "babel-loader",
                     options: {
-                        presets: ["@babel/preset-env"],
+                        presets: ["@babel/preset-env", "@babel/preset-react"], // Added React preset
                     },
                 },
             },

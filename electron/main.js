@@ -55,15 +55,21 @@ ipcMain.on("rename-file", (event, { oldPath, newPath }) => {
 })
 
 async function handleFileOpen() {
-    const { canceled, filePaths } = await dialog.showOpenDialog()
+    const { canceled, filePaths } = await dialog.showOpenDialog(win, {
+        properties: ["openFile"],
+        filters: [
+            { name: "Documents", extensions: ["pdf", "jpg", "png", "jpeg"] },
+        ],
+    })
     if (canceled || filePaths.length === 0) {
-        return { filePath: "", base64Image: "" }
+        return { filePath: "", base64Data: "", fileType: "" }
     }
 
     const filePath = filePaths[0]
+    const fileType = path.extname(filePath).toLowerCase()
     const fileContents = fs.readFileSync(filePath)
-    const base64Image = fileContents.toString("base64")
-    return { filePath, base64Image }
+    const base64Data = fileContents.toString("base64")
+    return { filePath, base64Data, fileType }
 }
 
 ipcMain.handle("dialog:openFile", handleFileOpen)

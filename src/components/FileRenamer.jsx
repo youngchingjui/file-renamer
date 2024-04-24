@@ -1,31 +1,55 @@
 import PropTypes from "prop-types"
 import React, { useState } from "react"
 
+import { pdfToImageBase64 } from "../lib/utils"
+
 const FileRenamer = ({ apiKey }) => {
     const [isLoading, setIsLoading] = useState(false)
     const [responseText, setResponseText] = useState("")
     const [fileInfo, setFileInfo] = useState({
         name: "No file selected",
-        base64: "",
+        base64Data: "",
+        fileType: "",
     })
     const [filenameFormat, setFilenameFormat] = useState("")
 
     const openFile = async () => {
         setResponseText("")
-        const { filePath, base64Image } = await window.electron.openFile()
+        const { filePath, base64Data, fileType } =
+            await window.electron.openFile() // Use Dialog from main.js to open file, so we get full file path
+
         if (!filePath) return
+
+        try {
+            let imageBase64
+            switch (fileType) {
+                case ".pdf":
+                    imageBase64 = await pdfToImageBase64(base64Data)
+                    break
+                case ".jpg":
+                case ".png":
+                case ".jpeg":
+                    imageBase64 = base64Data
+                    break
+                default:
+                    throw new Error("Unsupported file type")
+            }
+
         setFileInfo({
             name: filePath.split("/").pop(),
-            base64: base64Image,
+                base64Data: imageBase64,
             filePath,
-            extension: filePath.split(".").pop(),
+                fileType,
         })
+        } catch (error) {
+            setResponseText(`❌ ${error.message}`)
+        }
     }
 
     const handleRunScript = async () => {
         setResponseText("")
         setIsLoading(true)
-        if (!fileInfo.base64) {
+        if (!fileInfo.base64Data) {
             console.log("No image selected")
             setIsLoading(false)
             return
@@ -54,7 +78,7 @@ const FileRenamer = ({ apiKey }) => {
                         {
                             type: "image_url",
                             image_url: {
-                                url: `data:image/jpeg;base64,${fileInfo.base64}`,
+                                url: `data:image/jpeg;base64,${fileInfo.base64Data}`,
                             },
                         },
                     ],
@@ -81,7 +105,7 @@ const FileRenamer = ({ apiKey }) => {
                 0,
                 fileInfo.filePath.lastIndexOf("/") + 1
             )
-            const newPath = `${directoryPath}${newFileName}.${fileInfo.extension}`
+            const newPath = `${directoryPath}${newFileName}.${fileInfo.fileType}`
             window.electron.renameFile({ oldPath: fileInfo.filePath, newPath })
         } catch (error) {
             setResponseText(`❌ Error: ${error}`)
