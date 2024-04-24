@@ -109,7 +109,7 @@ const FileRenamer = ({ apiKey }) => {
                 0,
                 fileInfo.filePath.lastIndexOf("/") + 1
             )
-            const newPath = `${directoryPath}${newFileName}.${fileInfo.fileType}`
+            const newPath = `${directoryPath}${newFileName}${fileInfo.fileType}`
             window.electron.renameFile({ oldPath: fileInfo.filePath, newPath })
         } catch (error) {
             setResponseText(`❌ Error: ${error}`)
