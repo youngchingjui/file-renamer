@@ -7,7 +7,7 @@ function App() {
     const [apiKey, setApiKey] = useState(localStorage.getItem("apiKey") || "")
 
     return (
-        <div className="p-10 max-w-md mx-auto">
+        <div className="p-10 max-w-screen-xl mx-auto">
             <h1 className="text-lg font-semibold mb-5">File Renamer</h1>
             <FileRenamer apiKey={apiKey} />
             <hr className="my-6" />

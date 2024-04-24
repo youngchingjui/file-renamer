@@ -119,48 +119,55 @@ const FileRenamer = ({ apiKey }) => {
     }
 
     return (
-        <>
-            {imageSrc && <img src={imageSrc} />}
+        <div className="flex">
             <div
-                className="cursor-pointer mb-8 p-5 bg-gray-100 border-2 border-dashed border-gray-200 rounded flex items-center justify-center text-center"
+                className="flex-grow w-1/2 p-4 min-h-[300px] flex flex-col cursor-pointer"
                 onClick={openFile}
             >
-                {fileInfo.name ? (
-                    <div id="fileInfo">{fileInfo.name}</div>
+                {imageSrc ? (
+                    <img src={imageSrc} />
                 ) : (
-                    <label htmlFor="fileUpload">Upload file</label>
+                    <div className="flex-grow mb-8 p-5 bg-gray-100 border-2 border-dashed border-gray-200 rounded flex items-center justify-center text-center">
+                        {fileInfo.name ? (
+                            <div id="fileInfo">{fileInfo.name}</div>
+                        ) : (
+                            <label htmlFor="fileUpload">Upload file</label>
+                        )}
+                    </div>
                 )}
             </div>
-            <label
-                htmlFor="filenameFormat"
-                className="block text-sm font-medium text-gray-700"
-            >
-                Desired filename format (optional)
-            </label>
-            <input
-                id="filenameFormat"
-                type="text"
-                value={filenameFormat}
-                onChange={(e) => setFilenameFormat(e.target.value)}
-                placeholder="e.g. '<YYYYMMDD> - <Description>'"
-                className="mb-4 px-4 py-2 border rounded w-full"
-            />
-            <button
-                id="my-button"
-                className="px-4 py-2 mb-5 bg-indigo-500 text-white rounded hover:bg-indigo-400 transition-colors"
-                onClick={handleRunScript}
-                disabled={isLoading}
-            >
-                {isLoading ? (
-                    <div className="border-t-transparent border-solid animate-spin rounded-full border-white border-4 h-6 w-6"></div>
-                ) : (
-                    "Rename my file"
+            <div className="flex-none p-4">
+                <label
+                    htmlFor="filenameFormat"
+                    className="block text-sm font-medium text-gray-700"
+                >
+                    Desired filename format (optional)
+                </label>
+                <input
+                    id="filenameFormat"
+                    type="text"
+                    value={filenameFormat}
+                    onChange={(e) => setFilenameFormat(e.target.value)}
+                    placeholder="e.g. '<YYYYMMDD> - <Description>'"
+                    className="mb-4 px-4 py-2 border rounded w-full"
+                />
+                <button
+                    id="my-button"
+                    className="px-4 py-2 mb-5 bg-indigo-500 text-white rounded hover:bg-indigo-400 transition-colors"
+                    onClick={handleRunScript}
+                    disabled={isLoading}
+                >
+                    {isLoading ? (
+                        <div className="border-t-transparent border-solid animate-spin rounded-full border-white border-4 h-6 w-6"></div>
+                    ) : (
+                        "Rename my file"
+                    )}
+                </button>
+                {responseText && (
+                    <div className="text-green-500 mt-2">{responseText}</div>
                 )}
-            </button>
-            {responseText && (
-                <div className="text-green-500 mt-2">{responseText}</div>
-            )}
-        </>
+            </div>
+        </div>
     )
 }
 
