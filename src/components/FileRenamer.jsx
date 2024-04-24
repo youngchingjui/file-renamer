@@ -120,9 +120,9 @@ const FileRenamer = ({ apiKey }) => {
     }
 
     return (
-        <div className="flex">
+        <div className="flex flex-col lg:flex-row">
             <div
-                className="flex-grow w-1/2 p-4 min-h-[300px] flex flex-col cursor-pointer"
+                className="flex-grow lg:w-1/2 p-4 min-h-[300px] flex flex-col cursor-pointer"
                 onClick={openFile}
             >
                 {imageSrc ? (
