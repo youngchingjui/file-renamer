@@ -1,10 +1,10 @@
 import * as pdfjsLib from "pdfjs-dist/legacy/build/pdf.mjs"
 import pdfjsWorker from "pdfjs-dist/legacy/build/pdf.worker.mjs" // Leave this in for Webpack to bundle, required for PDF.js to work
 
-export const pdfToImageBase64 = async (base64Data) => {
+export const pdfToImageBase64 = async (base64PDFData) => {
     pdfjsLib.GlobalWorkerOptions.workerSrc =
         "pdfjs-dist/legacy/build/pdf.worker.mjs"
-    const loadingTask = pdfjsLib.getDocument({ data: atob(base64Data) })
+    const loadingTask = pdfjsLib.getDocument({ data: atob(base64PDFData) })
     const pdf = await loadingTask.promise
     const page = await pdf.getPage(1)
     const viewport = page.getViewport({ scale: 1.0 })
@@ -16,5 +16,6 @@ export const pdfToImageBase64 = async (base64Data) => {
         canvasContext: context,
         viewport: viewport,
     }).promise
-    return canvas.toDataURL().split(",")[1] // Returns base64 string only
+    const [mimeType, base64ImageData] = canvas.toDataURL().split(",")
+    return { mimeType, base64ImageData }
 }

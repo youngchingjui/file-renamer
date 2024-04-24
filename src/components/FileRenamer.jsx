@@ -12,6 +12,7 @@ const FileRenamer = ({ apiKey }) => {
         fileType: "",
     })
     const [filenameFormat, setFilenameFormat] = useState("")
+    const [imageSrc, setImageSrc] = useState("")
 
     const openFile = async () => {
         setResponseText("")
@@ -21,10 +22,12 @@ const FileRenamer = ({ apiKey }) => {
         if (!filePath) return
 
         try {
-            let imageBase64
+            let imageBase64, mimeType
             switch (fileType) {
                 case ".pdf":
-                    imageBase64 = await pdfToImageBase64(base64Data)
+                    const result = await pdfToImageBase64(base64Data)
+                    imageBase64 = result.base64ImageData
+                    mimeType = result.mimeType
                     break
                 case ".jpg":
                 case ".png":
@@ -35,12 +38,13 @@ const FileRenamer = ({ apiKey }) => {
                     throw new Error("Unsupported file type")
             }
 
-        setFileInfo({
-            name: filePath.split("/").pop(),
+            setImageSrc(mimeType + "," + imageBase64)
+            setFileInfo({
+                name: filePath.split("/").pop(),
                 base64Data: imageBase64,
-            filePath,
+                filePath,
                 fileType,
-        })
+            })
         } catch (error) {
             setResponseText(`❌ ${error.message}`)
         }
@@ -116,6 +120,7 @@ const FileRenamer = ({ apiKey }) => {
 
     return (
         <>
+            {imageSrc && <img src={imageSrc} />}
             <div
                 className="cursor-pointer mb-8 p-5 bg-gray-100 border-2 border-dashed border-gray-200 rounded flex items-center justify-center text-center"
                 onClick={openFile}
