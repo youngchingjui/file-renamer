@@ -22,7 +22,8 @@ const FileRenamer = ({ apiKey }) => {
         if (!filePath) return
 
         try {
-            let imageBase64, mimeType
+            let imageBase64
+            let mimeType = "data:image/jpeg;base64"
             switch (fileType) {
                 case ".pdf":
                     const result = await pdfToImageBase64(base64Data)
