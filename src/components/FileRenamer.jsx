@@ -126,7 +126,10 @@ const FileRenamer = ({ apiKey }) => {
                 onClick={openFile}
             >
                 {imageSrc ? (
-                    <img src={imageSrc} />
+                    <img
+                        src={imageSrc}
+                        className="max-w-full h-auto shadow-lg border border-gray-300 p-2 max-h-[600px] w-fit self-center"
+                    />
                 ) : (
                     <div className="flex-grow mb-8 p-5 bg-gray-100 border-2 border-dashed border-gray-200 rounded flex items-center justify-center text-center">
                         {fileInfo.name ? (
