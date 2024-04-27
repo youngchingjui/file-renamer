@@ -13,6 +13,7 @@ const FileRenamer = ({ apiKey }) => {
     })
     const [filenameFormat, setFilenameFormat] = useState("")
     const [imageSrc, setImageSrc] = useState("")
+    const [isLightboxOpen, setIsLightboxOpen] = useState(false)
 
     const openFile = async () => {
         setResponseText("")
@@ -121,26 +122,32 @@ const FileRenamer = ({ apiKey }) => {
 
     return (
         <div className="flex flex-col lg:flex-row">
-            <div
-                className="flex-grow lg:w-1/2 p-4 min-h-[300px] flex flex-col cursor-pointer"
-                onClick={openFile}
-            >
-                {imageSrc ? (
-                    <img
-                        src={imageSrc}
-                        className="max-w-full h-auto shadow-lg border border-gray-300 p-2 max-h-[600px] w-fit self-center"
-                    />
-                ) : (
-                    <div className="flex-grow mb-8 p-5 bg-gray-100 border-2 border-dashed border-gray-200 rounded flex items-center justify-center text-center">
-                        {fileInfo.name ? (
-                            <div id="fileInfo">{fileInfo.name}</div>
-                        ) : (
-                            <label htmlFor="fileUpload">Upload file</label>
-                        )}
-                    </div>
-                )}
-            </div>
             <div className="flex-none p-4">
+                <div className="bg-gray-100 rounded-lg p-4 flex items-center gap-4">
+                    {imageSrc ? (
+                        <img
+                            alt="Preview"
+                            className="rounded-lg object-cover cursor-pointer aspect-square"
+                            height={100}
+                            src={imageSrc}
+                            width={100}
+                            onClick={() => setIsLightboxOpen(true)}
+                        />
+                    ) : (
+                        <div className="h-24 w-24 bg-transparent border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center aspect-square" />
+                    )}
+                    <div className="flex-1">
+                        <h4 className="font-semibold text-gray-800 ">
+                            {fileInfo.name}
+                        </h4>
+                        <button
+                            className="mt-2 h-8 rounded-md px-3 text-xs border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground"
+                            onClick={openFile}
+                        >
+                            Change file
+                        </button>
+                    </div>
+                </div>
                 <label
                     htmlFor="filenameFormat"
                     className="block text-sm font-medium text-gray-700"
@@ -171,6 +178,17 @@ const FileRenamer = ({ apiKey }) => {
                     <div className="text-green-500 mt-2">{responseText}</div>
                 )}
             </div>
+            {isLightboxOpen && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
+                    <div className="bg-white p-2 rounded">
+                        <img
+                            src={imageSrc}
+                            className="max-w-full h-auto max-h-[90vh]"
+                            onClick={() => setIsLightboxOpen(false)}
+                        />
+                    </div>
+                </div>
+            )}
         </div>
     )
 }
