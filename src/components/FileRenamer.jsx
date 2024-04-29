@@ -117,6 +117,11 @@ const FileRenamer = ({ apiKey }) => {
             )
 
             const data = await response.json()
+
+            if (!response.ok) {
+                throw new Error(data.error.message)
+            }
+
             const newFileName = data.choices[0].message.content
             setResponseText({
                 message: `✅ File renamed to: ${newFileName}`,
@@ -131,7 +136,7 @@ const FileRenamer = ({ apiKey }) => {
             const newPath = `${directoryPath}${newFileName}${fileInfo.fileType}`
             window.electron.renameFile({ oldPath: fileInfo.filePath, newPath })
         } catch (error) {
-            setResponseText({ message: `❌ Error: ${error}`, type: "error" })
+            setResponseText({ message: `❌ ${error}`, type: "error" })
         } finally {
             setIsLoading(false)
         }
