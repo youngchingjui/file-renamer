@@ -14,11 +14,11 @@ const ApiKeyManager = ({ apiKey, setApiKey }) => {
     }
 
     const maskedAPIKey = (keyString) => {
-        return (
-            keyString.substring(0, 3) +
-            Array(20).fill("•").join("") +
-            keyString.substring(keyString.length - 3)
-        )
+        if (!keyString) {
+            return ""
+        }
+
+        return keyString.substring(0, 11) + Array(20).fill("•").join("")
     }
 
     return (

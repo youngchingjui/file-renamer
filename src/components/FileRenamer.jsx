@@ -62,7 +62,7 @@ const FileRenamer = ({ apiKey }) => {
 
         if (!apiKey) {
             setResponseText({
-                message: "❌ API key is required",
+                message: "❌ OpenAI API key is required",
                 type: "error",
             })
             setIsLoading(false)
