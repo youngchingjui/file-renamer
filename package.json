@@ -29,7 +29,7 @@
   },
   "name": "file-renamer",
   "description": "Automatically rename files based on its contents",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "main": "electron/main.js",
   "type": "module",
   "dependencies": {
@@ -51,7 +51,6 @@
     "webpack": "webpack --watch",
     "tailwind": "npx tailwindcss -i ./src/styles.css -o ./dist/styles.css --watch",
     "electron": "electron .",
-    "all": "concurrently \"npm:webpack\" \"npm:tailwind\" \"npm:electron\"",
     "start": "electron-forge start",
     "package": "electron-forge package",
     "make": "electron-forge make",
