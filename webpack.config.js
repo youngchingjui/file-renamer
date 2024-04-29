@@ -13,7 +13,13 @@ const config = {
         path: path.resolve(__dirname, "dist"),
         filename: "renderer.bundle.js",
     },
-    resolve: { extensions: [".js", ".jsx"], fullySpecified: false },
+    resolve: {
+        extensions: [".js", ".jsx", ".ts", ".tsx"],
+        fullySpecified: false,
+        alias: {
+            "@": path.resolve(__dirname, "src"),
+        },
+    },
     devtool: "inline-source-map",
     module: {
         rules: [
@@ -23,8 +29,15 @@ const config = {
                 use: {
                     loader: "babel-loader",
                     options: {
-                        presets: ["@babel/preset-env", "@babel/preset-react"], // Added React preset
+                        presets: ["@babel/preset-env", "@babel/preset-react"],
                     },
+                },
+            },
+            {
+                test: /\.(ts|tsx)$/,
+                exclude: /node_modules/,
+                use: {
+                    loader: "ts-loader",
                 },
             },
         ],

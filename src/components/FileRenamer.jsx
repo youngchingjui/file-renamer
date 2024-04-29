@@ -1,6 +1,9 @@
 import PropTypes from "prop-types"
 import React, { useState } from "react"
 
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+
 import { pdfToImageBase64 } from "../lib/utils"
 
 const FileRenamer = ({ apiKey }) => {
@@ -9,6 +12,7 @@ const FileRenamer = ({ apiKey }) => {
     const [fileInfo, setFileInfo] = useState({
         name: "No file selected",
         base64Data: "",
+        filePath: "",
         fileType: "",
     })
     const [filenameFormat, setFilenameFormat] = useState("")
@@ -121,63 +125,59 @@ const FileRenamer = ({ apiKey }) => {
     }
 
     return (
-        <div className="flex flex-col lg:flex-row">
-            <div className="flex-none p-4">
-                <div className="bg-gray-100 rounded-lg p-4 flex items-center gap-4">
-                    {imageSrc ? (
-                        <img
-                            alt="Preview"
-                            className="rounded-lg object-cover cursor-pointer aspect-square"
-                            height={100}
-                            src={imageSrc}
-                            width={100}
-                            onClick={() => setIsLightboxOpen(true)}
-                        />
-                    ) : (
-                        <div className="h-24 w-24 bg-transparent border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center aspect-square" />
-                    )}
-                    <div className="flex-1">
-                        <h4 className="font-semibold text-gray-800 ">
-                            {fileInfo.name}
-                        </h4>
-                        <button
-                            className="mt-2 h-8 rounded-md px-3 text-xs border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground"
-                            onClick={openFile}
-                        >
-                            Change file
-                        </button>
-                    </div>
+        <div className="flex flex-col gap-5">
+            <div className="bg-gray-100 rounded-lg p-4 flex items-center gap-4">
+                {imageSrc ? (
+                    <img
+                        alt="Preview"
+                        className="rounded-lg object-cover cursor-pointer aspect-square"
+                        height={100}
+                        src={imageSrc}
+                        width={100}
+                        onClick={() => setIsLightboxOpen(true)}
+                    />
+                ) : (
+                    <div className="h-24 w-24 bg-transparent border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center aspect-square" />
+                )}
+                <div className="flex-1">
+                    <h4 className="font-semibold text-gray-800 ">
+                        {fileInfo.name}
+                    </h4>
+                    <button
+                        className="mt-2 h-8 rounded-md px-3 text-xs border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground"
+                        onClick={openFile}
+                    >
+                        Change file
+                    </button>
                 </div>
-                <label
-                    htmlFor="filenameFormat"
-                    className="block text-sm font-medium text-gray-700"
-                >
-                    Desired filename format (optional)
-                </label>
-                <input
-                    id="filenameFormat"
+            </div>
+            <div className="bg-gray-100 rounded-lg p-4 flex flex-col gap-1">
+                <Label className="text-gray-800 " htmlFor="filename-format">
+                    Preferred filename format
+                </Label>
+                <Input
+                    className="max-w-[300px]"
+                    placeholder="e.g. '<YYYYMMDD> - <Description>'"
                     type="text"
                     value={filenameFormat}
                     onChange={(e) => setFilenameFormat(e.target.value)}
-                    placeholder="e.g. '<YYYYMMDD> - <Description>'"
-                    className="mb-4 px-4 py-2 border rounded w-full"
                 />
-                <button
-                    id="my-button"
-                    className="px-4 py-2 mb-5 bg-indigo-500 text-white rounded hover:bg-indigo-400 transition-colors"
-                    onClick={handleRunScript}
-                    disabled={isLoading}
-                >
-                    {isLoading ? (
-                        <div className="border-t-transparent border-solid animate-spin rounded-full border-white border-4 h-6 w-6"></div>
-                    ) : (
-                        "Rename my file"
-                    )}
-                </button>
-                {responseText && (
-                    <div className="text-green-500 mt-2">{responseText}</div>
-                )}
             </div>
+            <button
+                id="my-button"
+                className="px-4 py-2 mb-5 bg-indigo-500 text-white rounded hover:bg-indigo-400 transition-colors"
+                onClick={handleRunScript}
+                disabled={isLoading}
+            >
+                {isLoading ? (
+                    <div className="border-t-transparent border-solid animate-spin rounded-full border-white border-4 h-6 w-6"></div>
+                ) : (
+                    "Rename my file"
+                )}
+            </button>
+            {responseText && (
+                <div className="text-green-500 mt-2">{responseText}</div>
+            )}
             {isLightboxOpen && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
                     <div className="bg-white p-2 rounded">

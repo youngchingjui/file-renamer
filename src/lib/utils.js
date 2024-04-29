@@ -1,5 +1,7 @@
+import clsx from "clsx"
 import * as pdfjsLib from "pdfjs-dist/legacy/build/pdf.mjs"
 import pdfjsWorker from "pdfjs-dist/legacy/build/pdf.worker.mjs" // Leave this in for Webpack to bundle, required for PDF.js to work
+import { twMerge } from "tailwind-merge"
 
 export const pdfToImageBase64 = async (base64PDFData) => {
     pdfjsLib.GlobalWorkerOptions.workerSrc =
@@ -18,4 +20,8 @@ export const pdfToImageBase64 = async (base64PDFData) => {
     }).promise
     const [mimeType, base64ImageData] = canvas.toDataURL().split(",")
     return { mimeType, base64ImageData }
+}
+
+export const cn = (...inputs) => {
+    return twMerge(clsx(inputs))
 }
