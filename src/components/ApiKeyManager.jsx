@@ -2,13 +2,17 @@ import PropTypes from "prop-types"
 import React, { useState } from "react"
 
 const ApiKeyManager = ({ apiKey, setApiKey }) => {
-    const [isEditing, setIsEditing] = useState(false)
+    const [isEditing, setIsEditing] = useState(!apiKey)
 
     const handleEdit = () => {
         if (isEditing) {
             localStorage.setItem("apiKey", apiKey)
             setIsEditing(false)
-        } else {
+        } else if (apiKey) {
+            setIsEditing(true)
+        } else if (!isEditing) {
+            // isEditing is false, and apiKey is false (ie empty)
+            // This shouldn't happen, but just in case it does...
             setIsEditing(true)
         }
     }
@@ -46,10 +50,11 @@ const ApiKeyManager = ({ apiKey, setApiKey }) => {
                     onClick={handleEdit}
                     id="edit-api-key-button"
                     className={`px-4 py-2 min-w-24 border rounded transition-colors self-end ${
-                        isEditing
+                        isEditing && apiKey.trim() !== ""
                             ? "bg-indigo-500 text-white hover:bg-indigo-400 "
                             : "border-gray-500 text-gray-500 hover:bg-gray-100"
                     }`}
+                    disabled={apiKey.trim() === ""}
                 >
                     {isEditing ? "Save" : "Edit"}
                 </button>
