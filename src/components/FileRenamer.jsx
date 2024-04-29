@@ -8,7 +8,7 @@ import { pdfToImageBase64 } from "../lib/utils"
 
 const FileRenamer = ({ apiKey }) => {
     const [isLoading, setIsLoading] = useState(false)
-    const [responseText, setResponseText] = useState("")
+    const [responseText, setResponseText] = useState({ message: "", type: "" })
     const [fileInfo, setFileInfo] = useState({
         name: "No file selected",
         base64Data: "",
@@ -52,13 +52,23 @@ const FileRenamer = ({ apiKey }) => {
                 fileType,
             })
         } catch (error) {
-            setResponseText(`❌ ${error.message}`)
+            setResponseText({ message: `❌ ${error.message}`, type: "error" })
         }
     }
 
     const handleRunScript = async () => {
-        setResponseText("")
+        setResponseText({ message: "", type: "" })
         setIsLoading(true)
+
+        if (!apiKey) {
+            setResponseText({
+                message: "❌ API key is required",
+                type: "error",
+            })
+            setIsLoading(false)
+            return
+        }
+
         if (!fileInfo.base64Data) {
             console.log("No image selected")
             setIsLoading(false)
@@ -108,7 +118,10 @@ const FileRenamer = ({ apiKey }) => {
 
             const data = await response.json()
             const newFileName = data.choices[0].message.content
-            setResponseText(`✅ File renamed to: ${newFileName}`)
+            setResponseText({
+                message: `✅ File renamed to: ${newFileName}`,
+                type: "success",
+            })
 
             // Prepare to send new file name back to main
             const directoryPath = fileInfo.filePath.substring(
@@ -118,7 +131,7 @@ const FileRenamer = ({ apiKey }) => {
             const newPath = `${directoryPath}${newFileName}${fileInfo.fileType}`
             window.electron.renameFile({ oldPath: fileInfo.filePath, newPath })
         } catch (error) {
-            setResponseText(`❌ Error: ${error}`)
+            setResponseText({ message: `❌ Error: ${error}`, type: "error" })
         } finally {
             setIsLoading(false)
         }
@@ -163,21 +176,31 @@ const FileRenamer = ({ apiKey }) => {
                     onChange={(e) => setFilenameFormat(e.target.value)}
                 />
             </div>
-            <button
-                id="my-button"
-                className="px-4 py-2 mb-5 bg-indigo-500 text-white rounded hover:bg-indigo-400 transition-colors"
-                onClick={handleRunScript}
-                disabled={isLoading}
-            >
-                {isLoading ? (
-                    <div className="border-t-transparent border-solid animate-spin rounded-full border-white border-4 h-6 w-6"></div>
-                ) : (
-                    "Rename my file"
+            <div>
+                <button
+                    id="my-button"
+                    className="px-4 py-2 mb-2 bg-indigo-500 text-white rounded hover:bg-indigo-400 transition-colors"
+                    onClick={handleRunScript}
+                    disabled={isLoading}
+                >
+                    {isLoading ? (
+                        <div className="border-t-transparent border-solid animate-spin rounded-full border-white border-4 h-6 w-6"></div>
+                    ) : (
+                        "Rename my file"
+                    )}
+                </button>
+                {responseText.message && (
+                    <div
+                        className={`text-${
+                            responseText.type === "error"
+                                ? "red-500"
+                                : "green-500"
+                        }`}
+                    >
+                        {responseText.message}
+                    </div>
                 )}
-            </button>
-            {responseText && (
-                <div className="text-green-500 mt-2">{responseText}</div>
-            )}
+            </div>
             {isLightboxOpen && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
                     <div className="bg-white p-2 rounded">
