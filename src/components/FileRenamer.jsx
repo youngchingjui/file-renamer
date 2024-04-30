@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
 import { pdfToImageBase64 } from "../lib/utils"
+import FileTypeSelection from "./FileTypeSelection"
 
 const FileRenamer = ({ apiKey }) => {
     const [isLoading, setIsLoading] = useState(false)
@@ -169,17 +170,20 @@ const FileRenamer = ({ apiKey }) => {
                     </button>
                 </div>
             </div>
-            <div className="bg-gray-100 rounded-lg p-4 flex flex-col gap-1">
-                <Label className="text-gray-800 " htmlFor="filename-format">
-                    Preferred filename format
-                </Label>
-                <Input
-                    className="max-w-[300px]"
-                    placeholder="e.g. '<YYYYMMDD> - <Description>'"
-                    type="text"
-                    value={filenameFormat}
-                    onChange={(e) => setFilenameFormat(e.target.value)}
-                />
+            <div className="bg-gray-100 rounded-lg p-4 flex flex-col gap-5">
+                <FileTypeSelection setFilenameFormat={setFilenameFormat} />
+                <div>
+                    <Label className="text-gray-800 " htmlFor="filename-format">
+                        Preferred filename format
+                    </Label>
+                    <Input
+                        className="max-w-[300px]"
+                        placeholder="e.g. '<YYYYMMDD> - <Description>'"
+                        type="text"
+                        value={filenameFormat}
+                        onChange={(e) => setFilenameFormat(e.target.value)}
+                    />
+                </div>
             </div>
             <div>
                 <button
