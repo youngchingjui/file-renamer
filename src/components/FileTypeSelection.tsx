@@ -40,6 +40,12 @@ const fileTypes = [
         filenameFormat: "<YYYYMMDD> - <Bank name> - <Type of document>",
         otherSettings: {},
     },
+    {
+        id: "custom",
+        name: "Custom",
+        filenameFormat: "",
+        otherSettings: {},
+    },
 ]
 
 const FileTypeSelection = ({ setFilenameFormat }) => {
